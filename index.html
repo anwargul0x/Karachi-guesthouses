@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karachi Guesthouse Hub</title>
+    <style>
+        /* Base styles */
+        :root {
+            --price-color: #dc2626;
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .logo span {
+            color: var(--price-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero section */
+        .hero {
+            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(30, 64, 175, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231e40af"/><path d="M0 50 L100 50 M50 0 L50 100" stroke="%233b82f6" stroke-width="1"/></svg>');
+            background-size: cover;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            background: white;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .search-box button {
+            background: var(--price-color);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .search-box button:hover {
+            background: #b91c1c;
+        }
+        
+        /* Guesthouse listing */
+        .section-title {
+            font-size: 1.75rem;
+            margin: 2rem 0 1.5rem;
+            text-align: center;
+        }
+        
+        .guesthouse-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .guesthouse-card {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .guesthouse-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-image {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .neighborhood-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--price-color);
+            margin: 0.5rem 0;
+        }
+        
+        .amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .amenity {
+            background: #e0f2fe;
+            color: var(--secondary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .view-details {
+            display: block;
+            text-align: center;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        
+        .view-details:hover {
+            background: #1e3a8a;
+        }
+        
+        /* Detail page styles */
+        .detail-container {
+            display: none;
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .detail-header {
+            padding: 2rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .detail-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        .detail-content {
+            padding: 2rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        
+        .detail-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .photo-item {
+            height: 120px;
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        
+        .photo-item::before {
+            content: "";
+            display: block;
+            height: 100%;
+            background: linear-gradient(45deg, #94a3b8, #cbd5e1);
+        }
+        
+        .map-container {
+            height: 300px;
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-container::before {
+            content: "Map of " attr(data-address);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .contact-section {
+            background: #f0f9ff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .whatsapp-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #25D366;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .whatsapp-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 211, 102, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .footer-links a {
+            color: #bfdbfe;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            color: #bfdbfe;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                border-radius: 0.5rem;
+            }
+            
+            .search-box input,
+            .search-box button {
+                width: 100%;
+                padding: 1rem;
+                border-radius: 0;
+            }
+            
+            .guesthouse-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-header {
+                padding: 1.5rem;
+            }
+            
+            .detail-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .detail-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* WhatsApp button for mobile */
+        .whatsapp-sticky {
+            display: none;
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: #25D366;
+            color: white;
+            padding: 1rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3);
+            z-index: 99;
+        }
+        
+        @media (max-width: 768px) {
+            .whatsapp-sticky {
+                display: block;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/enhancements.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Karachi<span>Guesthouse</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="guesthouses.html">Guesthouses</a></li>
+                        <li><a href="neighborhoods.html">Neighborhoods</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Find Your Perfect Stay in Karachi</h1>
+            <p>Authentic guesthouses with real addresses, verified prices, and direct WhatsApp contact</p>
+            <div class="search-box">
+                <input type="text" placeholder="Search by neighborhood or guesthouse name...">
+                <button>Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guesthouse Listings -->
+    <section class="container">
+        <h2 class="section-title">Popular Guesthouses in Karachi</h2>
+        <div class="guesthouse-grid">
+            <!-- Guesthouse Card 1 -->
+            <div class="guesthouse-card" data-id="1">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1522199710521-72d69614c702?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Ocean View Guesthouse">
+                    <span class="neighborhood-badge">Clifton</span>
+                </div>
+                <div class="card-content">
+                    <h3>Ocean View Guesthouse</h3>
+                    <p>2 mins from Clifton Beach with sea breeze</p>
+                    <div class="price">₨ 2,800/night</div>
+                    <div class="amenities">
+                        <span class="amenity">AC</span>
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Breakfast</span>
+                        <span class="amenity">Parking</span>
+                    </div>
+                    <button class="view-details" data-id="1">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Guesthouse Card 2 -->
+            <div class="guesthouse-card" data-id="3">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Sea View Guesthouse">
+                    <span class="neighborhood-badge">Gulshan-e-Iqbal</span>
+                </div>
+                <div class="card-content">
+                    <h3>Sea View Guesthouse</h3>
+                    <p>Ocean-facing rooms 5 mins from Lucky One Mall</p>
+                    <div class="price">₨ 2,500/night</div>
+                    <div class="amenities">
+                        <span class="amenity">AC</span>
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Breakfast</span>
+                    </div>
+                    <button class="view-details" data-id="3">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Guesthouse Card 3 -->
+            <div class="guesthouse-card" data-id="2">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Luxury DHA Residency">
+                    <span class="neighborhood-badge">DHA Phase 5</span>
+                </div>
+                <div class="card-content">
+                    <h3>Luxury DHA Residency</h3>
+                    <p>Quiet neighborhood with modern amenities</p>
+                    <div class="price">₨ 3,200/night</div>
+                    <div class="amenities">
+                        <span class="amenity">AC</span>
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Laundry</span>
+                        <span class="amenity">Kitchen</span>
+                    </div>
+                    <button class="view-details" data-id="2">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Guesthouse Card 4 -->
+            <div class="guesthouse-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1551918120-9739cb430c6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Defence Comfort Inn">
+                    <span class="neighborhood-badge">Defence</span>
+                </div>
+                <div class="card-content">
+                    <h3>Defence Comfort Inn</h3>
+                    <p>Close to Tariq Road shopping district</p>
+                    <div class="price">₨ 2,000/night</div>
+                    <div class="amenities">
+                        <span class="amenity">AC</span>
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Parking</span>
+                    </div>
+                    <a href="guesthouses.html" class="view-details">View All Guesthouses</a>
+                </div>
+            </div>
+
+            <!-- Guesthouse Card 5 -->
+            <div class="guesthouse-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Nazimabad Family Stay">
+                    <span class="neighborhood-badge">North Nazimabad</span>
+                </div>
+                <div class="card-content">
+                    <h3>Nazimabad Family Stay</h3>
+                    <p>Spacious rooms for families and groups</p>
+                    <div class="price">₨ 1,800/night</div>
+                    <div class="amenities">
+                        <span class="amenity">AC</span>
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Kitchen</span>
+                    </div>
+                    <a href="guesthouses.html" class="view-details">View All Guesthouses</a>
+                </div>
+            </div>
+
+            <!-- Guesthouse Card 6 -->
+            <div class="guesthouse-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2048&q=90" alt="Historic Saddar Lodge">
+                    <span class="neighborhood-badge">Saddar</span>
+                </div>
+                <div class="card-content">
+                    <h3>Historic Saddar Lodge</h3>
+                    <p>Close to all major landmarks and transport</p>
+                    <div class="price">₨ 1,500/night</div>
+                    <div class="amenities">
+                        <span class="amenity">WiFi</span>
+                        <span class="amenity">Parking</span>
+                    </div>
+                    <a href="guesthouses.html" class="view-details">View All Guesthouses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guesthouse Detail Page (Hidden by default) -->
+    <div class="detail-container" id="detail-page">
+        <div class="detail-header">
+            <h1>Sea View Guesthouse</h1>
+            <p>Gulshan-e-Iqbal, Karachi</p>
+            <div class="price">₨ 2,500/night</div>
+        </div>
+        
+        <div class="detail-content">
+            <div class="detail-section">
+                <h2>About This Guesthouse</h2>
+                <p>Ocean-facing rooms just 5 minutes from Lucky One Mall. Free breakfast included with every stay. Our guesthouse offers a perfect blend of comfort and convenience for travelers visiting Karachi.</p>
+            </div>
+            
+            <div class="detail-section">
+                <h2>Photos</h2>
+                <div class="photo-grid">
+                    <div class="photo-item"></div>
+                    <div class="photo-item"></div>
+                    <div class="photo-item"></div>
+                    <div class="photo-item"></div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h2>Amenities</h2>
+                <div class="amenities">
+                    <span class="amenity">Air Conditioning</span>
+                    <span class="amenity">High-Speed WiFi</span>
+                    <span class="amenity">Complimentary Breakfast</span>
+                    <span class="amenity">Free Parking</span>
+                    <span class="amenity">24/7 Security</span>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h2>Location</h2>
+                <p>Plot 123, Block 13-C, Near Lucky One Mall, Gulshan-e-Iqbal, Karachi</p>
+                <div class="map-container" data-address="Plot 123, Block 13-C, Near Lucky One Mall, Gulshan-e-Iqbal, Karachi"></div>
+            </div>
+            
+            <div class="contact-section">
+                <h2>Contact Guesthouse</h2>
+                <p>For bookings and inquiries, contact us directly via WhatsApp</p>
+                <a href="https://wa.me/923001234567" class="whatsapp-button">
+                    <span>📱</span> WhatsApp Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Sticky Button (Mobile) -->
+    <a href="https://wa.me/923001234567" class="whatsapp-sticky">
+        <span>📱</span> WhatsApp Now
+    </a>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Karachi Guesthouse Hub</div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="guesthouses.html">Guesthouses</a>
+                    <a href="neighborhoods.html">Neighborhoods</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="copyright">&copy; 2023 Karachi Guesthouse Hub. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Include main JavaScript application -->
+    <script src="js/app.js"></script>
+</body>
+</html>

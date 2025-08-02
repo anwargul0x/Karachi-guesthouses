@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborhoods - Karachi Guesthouse Hub</title>
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #60a5fa;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --light-bg: #f1f5f9;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+        
+        /* Neighborhood Grid */
+        .neighborhood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Neighborhood Card */
+        .neighborhood-card {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neighborhood-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .neighborhood-image {
+            height: 180px;
+            background-color: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neighborhood-image::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #94a3b8, #cbd5e1);
+        }
+        
+        .neighborhood-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .neighborhood-content {
+            padding: 1.5rem;
+        }
+        
+        .neighborhood-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .highlights span {
+            background: #e0f2fe;
+            color: var(--secondary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .explore-btn {
+            display: block;
+            text-align: center;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .explore-btn:hover {
+            background: #1e3a8a;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        .copyright {
+            opacity: 0.8;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+
+        .neighborhood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .neighborhood-card {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .neighborhood-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .neighborhood-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neighborhood-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .neighborhood-content {
+            padding: 1.5rem;
+        }
+
+        .neighborhood-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+    <link rel="stylesheet" href="css/enhancements.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Karachi<span>Guesthouse</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="guesthouses.html">Guesthouses</a></li>
+                        <li><a href="neighborhoods.html">Neighborhoods</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Explore Karachi's Neighborhoods</h1>
+            <p>Discover the perfect area for your stay in Karachi</p>
+        </div>
+    </section>
+
+    <!-- Neighborhoods Grid -->
+    <section class="container">
+        <div class="neighborhood-grid">
+            <!-- Clifton -->
+            <div class="neighborhood-card">
+                <div class="neighborhood-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23e0f2fe'/%3E%3Cpath d='M0 400 Q 400 200 800 400 L 800 600 L 0 600 Z' fill='%233b82f6'/%3E%3Ccircle cx='600' cy='150' r='80' fill='%23fbbf24'/%3E%3C/svg%3E" alt="Clifton">
+                </div>
+                <div class="neighborhood-content">
+                    <h3>Clifton</h3>
+                    <p>Upscale beachside area with shopping centers and restaurants</p>
+                    <div class="stats">
+                        <div class="stat">🏠 15 Guesthouses</div>
+                        <div class="stat">⭐ 4.5/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DHA -->
+            <div class="neighborhood-card">
+                <div class="neighborhood-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23f0fdf4'/%3E%3Cpath d='M0 450 Q 400 250 800 450 L 800 600 L 0 600 Z' fill='%2322c55e'/%3E%3Crect x='100' y='100' width='200' height='200' fill='%23gray'/%3E%3C/svg%3E" alt="DHA">
+                </div>
+                <div class="neighborhood-content">
+                    <h3>Defence Housing Authority (DHA)</h3>
+                    <p>Modern residential area with parks and cafes</p>
+                    <div class="stats">
+                        <div class="stat">🏠 20 Guesthouses</div>
+                        <div class="stat">⭐ 4.7/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gulshan-e-Iqbal -->
+            <div class="neighborhood-card">
+                <div class="neighborhood-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23fff7ed'/%3E%3Cpath d='M0 300 Q 400 500 800 300 L 800 600 L 0 600 Z' fill='%23f97316'/%3E%3Ccircle cx='200' cy='200' r='100' fill='%23gray'/%3E%3C/svg%3E" alt="Gulshan-e-Iqbal">
+                </div>
+                <div class="neighborhood-content">
+                    <h3>Gulshan-e-Iqbal</h3>
+                    <p>Central location with universities and shopping malls</p>
+                    <div class="stats">
+                        <div class="stat">🏠 12 Guesthouses</div>
+                        <div class="stat">⭐ 4.3/5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Karachi Guesthouse Hub</div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="guesthouses.html">Guesthouses</a>
+                    <a href="neighborhoods.html">Neighborhoods</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="copyright">&copy; 2023 Karachi Guesthouse Hub. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Include main JavaScript application -->
+    <script src="js/app.js"></script>
+</body>
+</html>
