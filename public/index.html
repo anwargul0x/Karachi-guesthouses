@@ -36,7 +36,8 @@
 
   async function load() {
     const res = await fetch("/api/links");
-    return res.json();
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
   }
 
   function render(links) {
@@ -57,7 +58,7 @@
       del.textContent = "\u00d7";
       del.title = "Remove";
       del.onclick = async () => {
-        await fetch(`/api/links/${i}`, { method: "DELETE" });
+        await fetch(`/api/links?index=${i}`, { method: "DELETE" });
         refresh();
       };
       li.appendChild(a);
@@ -74,7 +75,11 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: val })
     });
-    if (!res.ok) { const err = await res.json(); alert(err.error || "Error"); return; }
+    if (!res.ok) {
+      const text = await res.text();
+      try { const err = JSON.parse(text); alert(err.error || "Error"); } catch { alert("Error"); }
+      return;
+    }
     input.value = "";
     refresh();
   }
