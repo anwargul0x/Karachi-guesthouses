@@ -198,6 +198,19 @@
     transform: translateY(0);
   }
 
+  .btn-outline {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border);
+    box-shadow: none;
+  }
+
+  .btn-outline:hover {
+    background: var(--bg-primary);
+    border-color: var(--border-focus);
+    color: var(--text-primary);
+  }
+
   .btn-icon {
     width: 18px;
     height: 18px;
@@ -205,6 +218,122 @@
 
   @media (max-width: 480px) {
     .btn { width: 100%; }
+  }
+
+  /* QR Scanner Overlay */
+  .scanner-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .scanner-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .scanner-modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .scanner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+
+  .scanner-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .scanner-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .scanner-close:hover {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .scanner-body {
+    text-align: center;
+    padding: var(--space-6) 0;
+  }
+
+  .scanner-prompt-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto var(--space-4);
+    background: var(--accent-soft);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+  }
+
+  .scanner-prompt-text {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+    line-height: 1.6;
+  }
+
+  .scanner-prompt-sub {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .scanner-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+
+  .scanner-actions .btn {
+    font-size: 0.875rem;
+    padding: var(--space-3) var(--space-5);
+  }
+
+  #reader {
+    display: none;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  #reader.active {
+    display: block;
+  }
+
+  #reader video {
+    border-radius: var(--radius-md);
   }
 
   /* Links Section */
@@ -449,6 +578,16 @@
           </svg>
           Add Link
         </button>
+        <button id="scanBtn" class="btn btn-outline" title="Scan QR Code">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <rect x="7" y="7" width="10" height="10" rx="1"/>
+            <line x1="12" y1="12" x2="12" y2="12.01"/>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -462,12 +601,51 @@
 
   <div id="toast" class="toast"></div>
 
+  <div id="scannerOverlay" class="scanner-overlay">
+    <div class="scanner-modal">
+      <div class="scanner-header">
+        <span class="scanner-title" id="scannerTitle">Scan QR Code</span>
+        <button id="scannerClose" class="scanner-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div id="scannerPrompt" class="scanner-body">
+        <div class="scanner-prompt-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <rect x="7" y="7" width="10" height="10" rx="1"/>
+            <line x1="12" y1="12" x2="12" y2="12.01"/>
+          </svg>
+        </div>
+        <p class="scanner-prompt-text">This site needs camera access<br/>to scan QR codes.</p>
+        <p class="scanner-prompt-sub">Your browser will ask for permission.</p>
+        <div class="scanner-actions">
+          <button id="scannerDeny" class="btn btn-outline">Cancel</button>
+          <button id="scannerAllow" class="btn">Allow Camera</button>
+        </div>
+      </div>
+      <div id="reader"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 <script>
   const input = document.getElementById("linkInput");
   const btn = document.getElementById("addBtn");
+  const scanBtn = document.getElementById("scanBtn");
   const list = document.getElementById("linkList");
   const badge = document.getElementById("countBadge");
   const toast = document.getElementById("toast");
+  const overlay = document.getElementById("scannerOverlay");
+  const scannerClose = document.getElementById("scannerClose");
+  const reader = document.getElementById("reader");
   let toastTimer;
 
   function showToast(msg) {
@@ -576,6 +754,66 @@
 
   btn.addEventListener("click", addLink);
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") addLink(); });
+
+  let scanner = null;
+
+  function showScannerPrompt() {
+    overlay.classList.add("active");
+    document.getElementById("scannerPrompt").style.display = "block";
+    reader.style.display = "none";
+    document.getElementById("scannerTitle").textContent = "Scan QR Code";
+  }
+
+  async function startCameraScanner() {
+    document.getElementById("scannerPrompt").style.display = "none";
+    reader.style.display = "block";
+    document.getElementById("scannerTitle").textContent = "Point camera at QR code";
+
+    if (!window.Html5Qrcode) {
+      showToast("Scanner library failed to load");
+      closeScanner();
+      return;
+    }
+    try {
+      scanner = new Html5Qrcode("reader");
+      await scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          if (decodedText && /^https?:\/\//i.test(decodedText)) {
+            input.value = decodedText;
+            showToast("QR code scanned");
+            closeScanner();
+            addLink();
+          } else if (decodedText) {
+            input.value = decodedText;
+            showToast("QR code scanned");
+            closeScanner();
+          }
+        },
+        () => {}
+      );
+    } catch (err) {
+      showToast("Camera access denied or not available");
+      closeScanner();
+    }
+  }
+
+  function closeScanner() {
+    if (scanner) {
+      scanner.stop().catch(() => {});
+      scanner = null;
+    }
+    overlay.classList.remove("active");
+  }
+
+  scanBtn.addEventListener("click", showScannerPrompt);
+  scannerClose.addEventListener("click", closeScanner);
+  document.getElementById("scannerAllow").addEventListener("click", startCameraScanner);
+  document.getElementById("scannerDeny").addEventListener("click", closeScanner);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeScanner();
+  });
 
   refresh();
 </script>

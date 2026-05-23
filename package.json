@@ -2,7 +2,11 @@
   "name": "shared-interface",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "@upstash/redis": "^1.38.0"
+    "@upstash/redis": "^1.38.0",
+    "express": "^5.2.1"
   }
 }
