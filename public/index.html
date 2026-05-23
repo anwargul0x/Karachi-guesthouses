@@ -756,15 +756,21 @@
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") addLink(); });
 
   let scanner = null;
+  let cameraAllowed = false;
 
   function showScannerPrompt() {
     overlay.classList.add("active");
+    if (cameraAllowed) {
+      startCameraScanner();
+      return;
+    }
     document.getElementById("scannerPrompt").style.display = "block";
     reader.style.display = "none";
     document.getElementById("scannerTitle").textContent = "Scan QR Code";
   }
 
   async function startCameraScanner() {
+    cameraAllowed = true;
     document.getElementById("scannerPrompt").style.display = "none";
     reader.style.display = "block";
     document.getElementById("scannerTitle").textContent = "Point camera at QR code";
