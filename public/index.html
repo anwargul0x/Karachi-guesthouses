@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link List</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; background: #f5f5f5; }
+  h1 { margin-bottom: 1.5rem; color: #333; }
+  .input-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+  input { flex: 1; padding: 0.6rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+  input:focus { border-color: #007bff; }
+  button { padding: 0.6rem 1.2rem; font-size: 1rem; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #0056b3; }
+  ul { list-style: none; }
+  li { padding: 0.6rem 0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+  a { color: #007bff; text-decoration: none; word-break: break-all; }
+  a:hover { text-decoration: underline; }
+  .delete { color: #dc3545; cursor: pointer; background: none; border: none; font-size: 1rem; padding: 0 0.3rem; }
+  .empty { color: #999; font-style: italic; }
+</style>
+</head>
+<body>
+  <h1>Links</h1>
+  <div class="input-row">
+    <input type="url" id="linkInput" placeholder="https://example.com" />
+    <button id="addBtn">Add</button>
+  </div>
+  <ul id="linkList"></ul>
+
+<script>
+  const input = document.getElementById("linkInput");
+  const btn = document.getElementById("addBtn");
+  const list = document.getElementById("linkList");
+
+  async function load() {
+    const res = await fetch("/api/links");
+    return res.json();
+  }
+
+  function render(links) {
+    list.innerHTML = "";
+    if (!links.length) {
+      list.innerHTML = '<li class="empty">No links yet.</li>';
+      return;
+    }
+    links.forEach((link, i) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = link;
+      a.textContent = link;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      const del = document.createElement("button");
+      del.className = "delete";
+      del.textContent = "\u00d7";
+      del.title = "Remove";
+      del.onclick = async () => {
+        await fetch(`/api/links/${i}`, { method: "DELETE" });
+        refresh();
+      };
+      li.appendChild(a);
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+  }
+
+  async function addLink() {
+    const val = input.value.trim();
+    if (!val) return;
+    const res = await fetch("/api/links", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: val })
+    });
+    if (!res.ok) { const err = await res.json(); alert(err.error || "Error"); return; }
+    input.value = "";
+    refresh();
+  }
+
+  async function refresh() {
+    render(await load());
+  }
+
+  btn.addEventListener("click", addLink);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") addLink(); });
+
+  refresh();
+</script>
+</body>
+</html>
