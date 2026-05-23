@@ -3,36 +3,491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Link List</title>
+<title>Bookmark — Your Link Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg-primary: #fafaf9;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+    --text-primary: #1c1917;
+    --text-secondary: #78716c;
+    --text-muted: #a8a29e;
+    --border: #e7e5e4;
+    --border-focus: #d6d3d1;
+    --accent: #0ea5e9;
+    --accent-hover: #0284c7;
+    --accent-soft: #e0f2fe;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; background: #f5f5f5; }
-  h1 { margin-bottom: 1.5rem; color: #333; }
-  .input-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  input { flex: 1; padding: 0.6rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; outline: none; }
-  input:focus { border-color: #007bff; }
-  button { padding: 0.6rem 1.2rem; font-size: 1rem; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-  button:hover { background: #0056b3; }
-  ul { list-style: none; }
-  li { padding: 0.6rem 0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-  a { color: #007bff; text-decoration: none; word-break: break-all; }
-  a:hover { text-decoration: underline; }
-  .delete { color: #dc3545; cursor: pointer; background: none; border: none; font-size: 1rem; padding: 0 0.3rem; }
-  .empty { color: #999; font-style: italic; }
+
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-6);
+  }
+
+  @media (max-width: 640px) {
+    .app { padding: var(--space-6) var(--space-4); }
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+    padding: var(--space-2) var(--space-4);
+    background: var(--accent-soft);
+    border-radius: 9999px;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .brand-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Input Card */
+  .input-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    margin-bottom: var(--space-10);
+    animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  }
+
+  .input-row {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  @media (max-width: 480px) {
+    .input-row { flex-direction: column; align-items: stretch; }
+  }
+
+  .input-wrapper {
+    position: relative;
+    flex: 1;
+  }
+
+  .url-icon {
+    position: absolute;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color 0.2s ease;
+  }
+
+  input:focus + .url-icon,
+  input:focus ~ .url-icon {
+    color: var(--accent);
+  }
+
+  input {
+    width: 100%;
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-10);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    background: var(--bg-input);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+  }
+
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(14, 165, 233, 0.2);
+  }
+
+  .btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 480px) {
+    .btn { width: 100%; }
+  }
+
+  /* Links Section */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-5);
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .count-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    padding: var(--space-1) var(--space-3);
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+  }
+
+  /* Link List */
+  .link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .link-item {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: var(--space-1);
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: 0;
+  }
+
+  .link-item:hover {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .link-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .link-content:hover {
+    background: #fafaf9;
+  }
+
+  .favicon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .link-info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .link-url {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    text-decoration: none;
+  }
+
+  .link-domain {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+    display: block;
+  }
+
+  .link-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .btn-icon-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .btn-icon-action:hover {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+
+  .btn-icon-action svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Empty State */
+  .empty {
+    text-align: center;
+    padding: var(--space-16) var(--space-6);
+    color: var(--text-muted);
+  }
+
+  .empty-illustration {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-5);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .empty-text {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+  }
+
+  .empty-hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1c1917;
+    color: #fff;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
-  <h1>Links</h1>
-  <div class="input-row">
-    <input type="url" id="linkInput" placeholder="https://example.com" />
-    <button id="addBtn">Add</button>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        Bookmark
+      </div>
+      <h1>Your Link Collection</h1>
+      <p class="subtitle">Save, organize, and access your favorite links in one beautiful place.</p>
+    </header>
+
+    <div class="input-card">
+      <div class="input-row">
+        <div class="input-wrapper">
+          <input type="text" id="linkInput" placeholder="Paste or type a link..." autocomplete="off" spellcheck="false" />
+          <svg class="url-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </div>
+        <button id="addBtn" class="btn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Link
+        </button>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">Saved Links</span>
+      <span id="countBadge" class="count-badge" style="display:none;"></span>
+    </div>
+
+    <ul id="linkList" class="link-list"></ul>
   </div>
-  <ul id="linkList"></ul>
+
+  <div id="toast" class="toast"></div>
 
 <script>
   const input = document.getElementById("linkInput");
   const btn = document.getElementById("addBtn");
   const list = document.getElementById("linkList");
+  const badge = document.getElementById("countBadge");
+  const toast = document.getElementById("toast");
+  let toastTimer;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  function getDomain(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ""); }
+    catch { return ""; }
+  }
+
+  function getFavicon(url) {
+    try {
+      const domain = new URL(url).hostname;
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    } catch { return ""; }
+  }
 
   async function load() {
     const res = await fetch("/api/links");
@@ -42,27 +497,57 @@
 
   function render(links) {
     list.innerHTML = "";
+    badge.style.display = links.length ? "inline-flex" : "none";
+    badge.textContent = `${links.length} ${links.length === 1 ? "link" : "links"}`;
+
     if (!links.length) {
-      list.innerHTML = '<li class="empty">No links yet.</li>';
+      list.innerHTML = `
+        <li class="empty">
+          <div class="empty-illustration">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </div>
+          <div class="empty-text">No links yet</div>
+          <div class="empty-hint">Paste a URL above to get started</div>
+        </li>
+      `;
       return;
     }
+
     links.forEach((link, i) => {
       const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = link;
-      a.textContent = link;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      const del = document.createElement("button");
-      del.className = "delete";
-      del.textContent = "\u00d7";
-      del.title = "Remove";
-      del.onclick = async () => {
+      li.className = "link-item";
+      li.style.animationDelay = `${i * 0.05}s`;
+
+      const domain = getDomain(link);
+      const favicon = getFavicon(link);
+
+      li.innerHTML = `
+        <a class="link-content" href="${link}" target="_blank" rel="noopener noreferrer" title="${link}">
+          <span class="favicon"><img src="${favicon}" alt="" width="16" height="16" onerror="this.style.display='none'"></span>
+          <span class="link-info">
+            <span class="link-url">${link}</span>
+            <span class="link-domain">${domain}</span>
+          </span>
+        </a>
+        <span class="link-actions">
+          <button class="btn-icon-action" title="Remove" data-index="${i}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </span>
+      `;
+
+      li.querySelector(".btn-icon-action").onclick = async () => {
         await fetch(`/api/links?index=${i}`, { method: "DELETE" });
+        showToast("Link removed");
         refresh();
       };
-      li.appendChild(a);
-      li.appendChild(del);
+
       list.appendChild(li);
     });
   }
@@ -81,6 +566,7 @@
       return;
     }
     input.value = "";
+    showToast("Link saved");
     refresh();
   }
 
